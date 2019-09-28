@@ -30,13 +30,15 @@ public class ARDraw : MonoBehaviour
 
     private Material CurrentMaterial;
 
-    public GameObject ColorPicker;
-    public Material ColorPickerMaterial;
+    //public GameObject ColorPicker;
+    //public Material ColorPickerMaterial;
 
     Color lerpedColor = Color.white;
 
     public GameObject ColorPopup;
     public GameObject MaterialPopup;
+    
+    private int lineCounter;
 
     // Start is called before the first frame  m   
     void Start()
@@ -50,52 +52,56 @@ public class ARDraw : MonoBehaviour
         //Debug.Log(Application.dataPath + "/Scenes/ARDraw/Material/White");
         Debug.Log(CurrentMaterial);
 
-        InitTouchControl();
-       
+        //InitTouchControl();
 
+        lineCounter = 0;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        //if (Input.touchCount > 0)
-        //{
-        //    if(!IsPointerOverUIObject())
-        //    {
-        //        Touch touch = Input.GetTouch(0);
-        //        switch (touch.phase)
-        //        {
-        //            // 记录初始的点击位置
-        //            case TouchPhase.Began:
-        //                clone = (GameObject)Instantiate(LineObject);
-        //                clone.tag = "ARLines ";
-        //                clone.GetComponent<LineRenderer>().material = CurrentMaterial;
-        //                clone.transform.parent = DrawSpace.transform;
-        //                line = clone.GetComponent<LineRenderer>();
-        //                line.startWidth = LineWidth;
-        //                line.endWidth = LineWidth;
-        //                i = 0;
-        //                IsDrawing = true;
-        //                break;
-        //            case TouchPhase.Moved:
-        //                break;
-        //            case TouchPhase.Ended:
-        //                i = 0;
-        //                IsDrawing = false;
-        //                break;
-        //        }
+        if (Input.touchCount > 0)
+        {
+            if(!IsPointerOverUIObject())
+            {
+                //close popups
+                MaterialPopup.SetActive(false);
+                ColorPopup.SetActive(false);
 
-        //        if (IsDrawing)
-        //        {
-        //            i++;
-        //            line.positionCount = i;
-        //            //line.SetPosition(i - 1, TargetCamera.transform.position + DrawOffset * TargetCamera.transform.forward);
-        //            //依据屏幕触摸位置确定线段位置
-        //            line.SetPosition(i - 1, TargetCamera.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, DrawOffset)));
-        //        }
-        //    }
-        //}
+                Touch touch = Input.GetTouch(0);
+                switch (touch.phase)
+                {
+                    // 记录初始的点击位置
+                    case TouchPhase.Began:
+                        clone = (GameObject)Instantiate(LineObject);
+                        clone.tag = "ARLines ";
+                        clone.GetComponent<LineRenderer>().material = CurrentMaterial;
+                        clone.transform.parent = DrawSpace.transform;
+                        line = clone.GetComponent<LineRenderer>();
+                        line.startWidth = LineWidth;
+                        line.endWidth = LineWidth;
+                        lineCounter = 0;
+                        IsDrawing = true;
+                        break;
+                    case TouchPhase.Moved:
+                        break;
+                    case TouchPhase.Ended:
+                        lineCounter = 0;
+                        IsDrawing = false;
+                        break;
+                }
+
+                if (IsDrawing)
+                {
+                    lineCounter++;
+                    line.positionCount = lineCounter;
+                    //line.SetPosition(i - 1, TargetCamera.transform.position + DrawOffset * TargetCamera.transform.forward);
+                    //依据屏幕触摸位置确定线段位置
+                    line.SetPosition(lineCounter - 1, TargetCamera.ScreenToWorldPoint(new Vector3(touch.position.x, touch.position.y, DrawOffset)));
+                }
+            }
+        }
 
         //lerpedColor = Color.Lerp(Color.white, Color.red, Mathf.PingPong(Time.time, 2));
 
@@ -106,7 +112,8 @@ public class ARDraw : MonoBehaviour
     {
         var recognizer = new TKPanRecognizer();
 
-        //recognizer.boundaryFrame = new TKRect(50f, 0, 100f, 100f);
+        //recognizer.boundaryFrame = new TKRect(50f, 0,public GameObject ColorPicker;
+        //public Material ColorPickerMaterial; 100f, 100f);
 
         // when using in conjunction with a pinch or rotation recognizer setting the min touches to 2 smoothes movement greatly
         if (Application.platform == RuntimePlatform.IPhonePlayer)
@@ -118,7 +125,7 @@ public class ARDraw : MonoBehaviour
             //Debug.Log("pan recognizer fired: " + r);
             //Debug.Log(recognizer.touchLocation());
             //Debug.Log(recognizer.state);
-            if (!EventSystem.current.IsPointerOverGameObject())
+            if (!EventSystem.current.IsPointerOverGameObject()||true)
             {
                 if (IsDrawing == false)
                 {
@@ -189,13 +196,13 @@ public class ARDraw : MonoBehaviour
         CurrentMaterial = (Material)Instantiate(material);
     }
 
-    public void UseColorPickerValue()
-    {
-        Color32 color = ColorPicker.GetComponent<ColorPickerControl>().GetColorPcikerValue();
-        ColorPickerMaterial.color = color;
-        SetMaterialRenderingMode(ColorPickerMaterial,RenderingMode.Opaque);
-        CurrentMaterial = (Material)Instantiate(ColorPickerMaterial);
-    }
+    //public void UseColorPickerValue()
+    //{
+    //    Color32 color = ColorPicker.GetComponent<ColorPickerControl>().GetColorPcikerValue();
+    //    ColorPickerMaterial.color = color;
+    //    SetMaterialRenderingMode(ColorPickerMaterial,RenderingMode.Opaque);
+    //    CurrentMaterial = (Material)Instantiate(ColorPickerMaterial);
+    //}
 
     public void SetMaterialRenderingMode(Material material, RenderingMode renderingMode)
     {

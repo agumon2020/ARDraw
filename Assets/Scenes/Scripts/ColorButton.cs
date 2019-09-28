@@ -40,7 +40,7 @@ namespace Ricimi
             //Debug.Log(colorValue);
             Material mat = new Material(Shader.Find("Unlit/Color"));
             mat.color = colorValue;
-            GameObject.Find("Cube").GetComponent<MeshRenderer>().material = mat;
+            //GameObject.Find("Cube").GetComponent<MeshRenderer>().material = mat;
             GameObject.Find("Manager").GetComponent<ARDraw>().ChangeTexure(mat);
 
             for (int i=0;i< transform.parent.childCount; i++)
